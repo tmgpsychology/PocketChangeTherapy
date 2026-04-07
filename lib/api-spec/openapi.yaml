@@ -3,13 +3,27 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: PocketChange therapy practice management API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: clients
+    description: Client management (practitioner)
+  - name: goals
+    description: Goal management
+  - name: checkins
+    description: Goal check-ins
+  - name: portal
+    description: Client portal
+  - name: dashboard
+    description: Practitioner dashboard
+  - name: reminders
+    description: SMS reminder settings
 paths:
   /healthz:
     get:
@@ -24,6 +38,500 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+      responses:
+        "201":
+          description: Registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/user:
+    get:
+      operationId: getAuthUser
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/link-client:
+    post:
+      operationId: linkClientCode
+      tags: [auth]
+      summary: Link access code to client account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LinkClientBody"
+      responses:
+        "200":
+          description: Linked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "400":
+          description: Invalid code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/reset-password/verify-question:
+    post:
+      operationId: verifySecurityQuestion
+      tags: [auth]
+      summary: Verify security question answer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifySecurityQuestionBody"
+      responses:
+        "200":
+          description: Verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyQuestionResponse"
+        "400":
+          description: Incorrect answer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/reset-password/reset:
+    post:
+      operationId: resetPassword
+      tags: [auth]
+      summary: Reset password with token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordBody"
+      responses:
+        "200":
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid token or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get practitioner dashboard
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardData"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /clients:
+    get:
+      operationId: listClients
+      tags: [clients]
+      summary: List all clients
+      responses:
+        "200":
+          description: List of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+    post:
+      operationId: createClient
+      tags: [clients]
+      summary: Create a new client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClientBody"
+      responses:
+        "201":
+          description: Client created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /clients/{code}:
+    get:
+      operationId: getClient
+      tags: [clients]
+      summary: Get client by access code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateClient
+      tags: [clients]
+      summary: Update client
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClientBody"
+      responses:
+        "200":
+          description: Updated client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+    delete:
+      operationId: deleteClient
+      tags: [clients]
+      summary: Delete client
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /clients/{code}/portal:
+    get:
+      operationId: getClientPortal
+      tags: [portal]
+      summary: Get client portal data
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Portal data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortalData"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /clients/{code}/goals:
+    get:
+      operationId: getClientGoals
+      tags: [goals]
+      summary: Get all goals for a client
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Goals list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Goal"
+    post:
+      operationId: createGoal
+      tags: [goals]
+      summary: Create a goal for a client
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGoalBody"
+      responses:
+        "201":
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+
+  /clients/{code}/goals/{goalId}:
+    patch:
+      operationId: updateGoal
+      tags: [goals]
+      summary: Update a goal
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateGoalBody"
+      responses:
+        "200":
+          description: Updated goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+    delete:
+      operationId: deleteGoal
+      tags: [goals]
+      summary: Delete a goal
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /clients/{code}/goals/{goalId}/checkins:
+    get:
+      operationId: getGoalCheckins
+      tags: [checkins]
+      summary: Get check-ins for a goal
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Check-ins list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Checkin"
+    post:
+      operationId: createCheckin
+      tags: [checkins]
+      summary: Create a check-in for a goal
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCheckinBody"
+      responses:
+        "201":
+          description: Check-in created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checkin"
+
+  /client-portal/sms-reminder:
+    get:
+      operationId: getSmsReminder
+      tags: [reminders]
+      summary: Get SMS reminder settings
+      responses:
+        "200":
+          description: SMS reminder settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SmsReminder"
+        "404":
+          description: Not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: saveSmsReminder
+      tags: [reminders]
+      summary: Save SMS reminder settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SmsReminderBody"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SmsReminder"
+    delete:
+      operationId: deleteSmsReminder
+      tags: [reminders]
+      summary: Delete SMS reminder settings
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +542,374 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    RegisterBody:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [practitioner, client]
+        securityQuestion:
+          type: string
+        securityAnswer:
+          type: string
+      required:
+        - email
+        - name
+        - password
+        - role
+
+    LinkClientBody:
+      type: object
+      properties:
+        accessCode:
+          type: string
+      required:
+        - accessCode
+
+    AuthUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [practitioner, client]
+        linkedClientId:
+          type: ["integer", "null"]
+        accessCode:
+          type: ["string", "null"]
+      required:
+        - id
+        - email
+        - name
+        - role
+
+    VerifySecurityQuestionBody:
+      type: object
+      properties:
+        email:
+          type: string
+        answer:
+          type: string
+      required:
+        - email
+        - answer
+
+    VerifyQuestionResponse:
+      type: object
+      properties:
+        resetToken:
+          type: string
+        question:
+          type: string
+      required:
+        - resetToken
+        - question
+
+    ResetPasswordBody:
+      type: object
+      properties:
+        resetToken:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - resetToken
+        - newPassword
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        accessCode:
+          type: string
+        notes:
+          type: ["string", "null"]
+        practitionerId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        goalCount:
+          type: ["integer", "null"]
+        lastCheckin:
+          type: ["string", "null"]
+        averageProgress:
+          type: ["number", "null"]
+      required:
+        - id
+        - name
+        - accessCode
+        - practitionerId
+        - createdAt
+
+    CreateClientBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - name
+
+    UpdateClientBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    Goal:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        type:
+          type: ["string", "null"]
+          enum: [process, outcome, null]
+        parentGoalId:
+          type: ["integer", "null"]
+        clientId:
+          type: integer
+        currentProgress:
+          type: ["number", "null"]
+        targetDate:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        subGoals:
+          type: array
+          items:
+            $ref: "#/components/schemas/Goal"
+      required:
+        - id
+        - title
+        - clientId
+        - createdAt
+        - subGoals
+
+    CreateGoalBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        type:
+          type: ["string", "null"]
+          enum: [process, outcome, null]
+        parentGoalId:
+          type: ["integer", "null"]
+        targetDate:
+          type: ["string", "null"]
+      required:
+        - title
+
+    UpdateGoalBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        type:
+          type: ["string", "null"]
+          enum: [process, outcome, null]
+        targetDate:
+          type: ["string", "null"]
+
+    Checkin:
+      type: object
+      properties:
+        id:
+          type: integer
+        goalId:
+          type: integer
+        percentage:
+          type: number
+        whatWorked:
+          type: ["string", "null"]
+        whatGotInTheWay:
+          type: ["string", "null"]
+        whatCouldYouDoDifferently:
+          type: ["string", "null"]
+        barrierTags:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - goalId
+        - percentage
+        - createdAt
+
+    CreateCheckinBody:
+      type: object
+      properties:
+        percentage:
+          type: number
+        whatWorked:
+          type: ["string", "null"]
+        whatGotInTheWay:
+          type: ["string", "null"]
+        whatCouldYouDoDifferently:
+          type: ["string", "null"]
+        barrierTags:
+          type: ["string", "null"]
+      required:
+        - percentage
+
+    PortalData:
+      type: object
+      properties:
+        client:
+          $ref: "#/components/schemas/Client"
+        practitionerName:
+          type: string
+        goals:
+          type: array
+          items:
+            $ref: "#/components/schemas/Goal"
+      required:
+        - client
+        - practitionerName
+        - goals
+
+    DashboardData:
+      type: object
+      properties:
+        totalClients:
+          type: integer
+        activeClients:
+          type: integer
+        totalCheckins:
+          type: integer
+        clients:
+          type: array
+          items:
+            $ref: "#/components/schemas/Client"
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+      required:
+        - totalClients
+        - activeClients
+        - totalCheckins
+        - clients
+        - recentActivity
+
+    ActivityItem:
+      type: object
+      properties:
+        clientName:
+          type: string
+        goalTitle:
+          type: string
+        percentage:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - clientName
+        - goalTitle
+        - percentage
+        - createdAt
+
+    SmsReminder:
+      type: object
+      properties:
+        id:
+          type: integer
+        phone:
+          type: string
+        days:
+          type: string
+        time:
+          type: string
+        timezone:
+          type: string
+        messageTemplate:
+          type: string
+      required:
+        - id
+        - phone
+        - days
+        - time
+        - timezone
+        - messageTemplate
+
+    SmsReminderBody:
+      type: object
+      properties:
+        phone:
+          type: string
+        days:
+          type: string
+        time:
+          type: string
+        timezone:
+          type: string
+        messageTemplate:
+          type: string
+      required:
+        - phone
+        - days
+        - time
+        - timezone
+        - messageTemplate

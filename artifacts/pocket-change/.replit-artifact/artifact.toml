@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PocketChange"
+version = "1.0.0"
+id = "artifacts/pocket-change"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19404
+
+[services.development]
+run = "pnpm --filter @workspace/pocket-change run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pocket-change", "run", "build" ]
+publicDir = "artifacts/pocket-change/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19404"
+BASE_PATH = "/"
