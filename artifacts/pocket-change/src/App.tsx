@@ -4,8 +4,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
 import NotFound from "@/pages/not-found";
-import LoginPage from "@/pages/LoginPage";
-import RegisterPage from "@/pages/RegisterPage";
+import LandingPage from "@/pages/LandingPage";
+import TherapistLoginPage from "@/pages/TherapistLoginPage";
+import TherapistRegisterPage from "@/pages/TherapistRegisterPage";
+import ClientLoginPage from "@/pages/ClientLoginPage";
+import ClientRegisterPage from "@/pages/ClientRegisterPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import LinkCodePage from "@/pages/LinkCodePage";
 import DashboardPage from "@/pages/practitioner/DashboardPage";
@@ -44,11 +47,21 @@ function AppRoutes() {
   if (!user) {
     return (
       <Switch>
-        <Route path="/login" component={LoginPage} />
-        <Route path="/register" component={RegisterPage} />
+        <Route path="/" component={LandingPage} />
+        <Route path="/therapist/login" component={TherapistLoginPage} />
+        <Route path="/therapist/register" component={TherapistRegisterPage} />
+        <Route path="/client/login" component={ClientLoginPage} />
+        <Route path="/client/register" component={ClientRegisterPage} />
         <Route path="/forgot-password" component={ForgotPasswordPage} />
+        {/* Legacy redirects */}
+        <Route path="/login">
+          <Redirect to="/" />
+        </Route>
+        <Route path="/register">
+          <Redirect to="/" />
+        </Route>
         <Route>
-          <Redirect to="/login" />
+          <Redirect to="/" />
         </Route>
       </Switch>
     );
