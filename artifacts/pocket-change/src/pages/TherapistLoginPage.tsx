@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export default function TherapistLoginPage() {
   const [email, setEmail] = useState("");
@@ -79,10 +80,8 @@ export default function TherapistLoginPage() {
                       <span className="text-xs text-primary hover:underline cursor-pointer">Forgot password?</span>
                     </Link>
                   </div>
-                  <Input
+                  <PasswordInput
                     id="password"
-                    type="password"
-                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
