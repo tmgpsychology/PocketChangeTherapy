@@ -42,7 +42,6 @@ app.use(
   session({
     store: new PgSession({
       pool,
-      createTableIfMissing: true,
     }),
     secret: process.env["SESSION_SECRET"] ?? "pocketchange-secret",
     resave: false,
