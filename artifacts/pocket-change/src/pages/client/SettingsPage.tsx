@@ -12,7 +12,7 @@ export default function ClientSettingsPage() {
 
   const handleLogout = async () => {
     await logout.mutateAsync({});
-    queryClient.invalidateQueries({ queryKey: getGetAuthUserQueryKey() });
+    queryClient.setQueryData(getGetAuthUserQueryKey(), null);
   };
 
   return (

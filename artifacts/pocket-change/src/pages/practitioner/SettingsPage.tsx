@@ -12,7 +12,7 @@ export default function PractitionerSettingsPage() {
 
   const handleLogout = async () => {
     await logout.mutateAsync({});
-    queryClient.invalidateQueries({ queryKey: getGetAuthUserQueryKey() });
+    queryClient.setQueryData(getGetAuthUserQueryKey(), null);
   };
 
   return (
