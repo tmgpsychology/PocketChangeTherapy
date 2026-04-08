@@ -31,8 +31,22 @@ app.use(
   }),
 );
 
+const ALLOWED_ORIGINS = [
+  "https://pocketchangetherapy.replit.app",
+  "capacitor://localhost",
+  "http://localhost",
+];
+
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else if (process.env.NODE_ENV !== "production") {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -50,7 +64,7 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
