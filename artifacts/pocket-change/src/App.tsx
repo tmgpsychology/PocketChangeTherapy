@@ -86,7 +86,9 @@ function AppRoutes() {
         <Route path="/clients" component={ClientsPage} />
         <Route path="/clients/:code" component={ClientDetailPage} />
         <Route path="/settings" component={PractitionerSettingsPage} />
-        <Route component={NotFound} />
+        <Route>
+          <Redirect to="/" />
+        </Route>
       </Switch>
     );
   }
@@ -99,7 +101,9 @@ function AppRoutes() {
       <Route path="/portal/goals/:goalId/checkin" component={CheckinPage} />
       <Route path="/reminders" component={RemindersPage} />
       <Route path="/settings" component={ClientSettingsPage} />
-      <Route component={NotFound} />
+      <Route>
+        <Redirect to="/" />
+      </Route>
     </Switch>
   );
 }
