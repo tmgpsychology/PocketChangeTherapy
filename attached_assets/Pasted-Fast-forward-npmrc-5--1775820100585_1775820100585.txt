@@ -1,0 +1,56 @@
+Fast-forward
+ .npmrc                                                                   |  5 +++
+ ...e-js-v25-3-0-Users-travisgrogan-Documents-PocketCha_1775819918408.txt | 43 ++++++++++++++++++++++++
+ ...rs-travisgrogan-Library-CloudStorage-OneDrive-tmgps_1775819586585.txt | 59 ++++++++++++++++++++++++++++++++
+ ...install-sh-c-rm-f-package-lock-json-yarn-lock-case-_1775819488382.txt | 50 ++++++++++++++++++++++++++++
+ ...install-sh-c-rm-f-package-lock-json-yarn-lock-case-_1775819531435.txt | 48 ++++++++++++++++++++++++++
+ ...e-all-9-workspace-projects-artifacts-api-server-WAR_1775819661678.txt | 61 ++++++++++++++++++++++++++++++++++
+ ...ilter-workspace-pocket-change-build-Scope-all-9-wor_1775819861577.txt | 58 ++++++++++++++++++++++++++++++++
+ ...-filter-workspace-pocket-change-build-Scope-all-9-w_1775819797857.txt | 58 ++++++++++++++++++++++++++++++++
+ 8 files changed, 382 insertions(+)
+ create mode 100644 attached_assets/Pasted--Node-js-v25-3-0-Users-travisgrogan-Documents-PocketCha_1775819918408.txt
+ create mode 100644 attached_assets/Pasted--Users-travisgrogan-Library-CloudStorage-OneDrive-tmgps_1775819586585.txt
+ create mode 100644 attached_assets/Pasted--preinstall-sh-c-rm-f-package-lock-json-yarn-lock-case-_1775819488382.txt
+ create mode 100644 attached_assets/Pasted--preinstall-sh-c-rm-f-package-lock-json-yarn-lock-case-_1775819531435.txt
+ create mode 100644 attached_assets/Pasted-Scope-all-9-workspace-projects-artifacts-api-server-WAR_1775819661678.txt
+ create mode 100644 attached_assets/Pasted-pm-filter-workspace-pocket-change-build-Scope-all-9-wor_1775819861577.txt
+ create mode 100644 attached_assets/Pasted-pnpm-filter-workspace-pocket-change-build-Scope-all-9-w_1775819797857.txt
+Scope: all 9 workspace projects
+Lockfile is up to date, resolution step is skipped
+Packages: +565
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 565, reused 565, downloaded 0, added 565, done
+
+dependencies:
++ @rollup/rollup-darwin-arm64 4.60.1
+
+devDependencies:
++ prettier 3.8.1
++ typescript 5.9.3
+
+. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Us…
+└─ Done in 17ms
+Done in 3.7s using pnpm v10.33.0
+
+> @workspace/pocket-change@0.0.0 build /Users/travisgrogan/Documents/PocketChangeTherapy/artifacts/pocket-change
+> vite build --config vite.config.ts
+
+failed to load config from /Users/travisgrogan/Documents/PocketChangeTherapy/artifacts/pocket-change/vite.config.ts
+error during build:
+Error: Cannot find module '../lightningcss.darwin-arm64.node'
+Require stack:
+- /Users/travisgrogan/Documents/PocketChangeTherapy/node_modules/.pnpm/lightningcss@1.32.0/node_modules/lightningcss/node/index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1503:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (/Users/travisgrogan/Documents/PocketChangeTherapy/node_modules/.pnpm/lightningcss@1.32.0/node_modules/lightningcss/node/index.js:20:12)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14)
+/Users/travisgrogan/Documents/PocketChangeTherapy/artifacts/pocket-change:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/pocket-change@0.0.0 build: `vite build --config vite.config.ts`
+Exit status 1
+travisgrogan@Mac PocketChangeTherapy % 
